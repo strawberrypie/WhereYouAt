@@ -17,7 +17,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        Parse.setApplicationId("wMNwNpfj87bX3Dia3mDqXiczJkmay2q9xNN7Fa6s", clientKey: "Jj4ycl8W8E7JK55iXhBJLaOPv9xHi944M4FVtsd1")
+        
+        
+        
+        PFFacebookUtils.initializeFacebook()
+        
+        
+        
+        FBLoginView.self
+        FBProfilePictureView.self
+        
         return true
+    }
+    
+
+    func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
+        
+        //var wasHandled: Bool = FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication)
+        //return wasHandled
+        
+        return FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication, withSession: PFFacebookUtils.session())
+        
     }
 
     func applicationWillResignActive(application: UIApplication) {
@@ -36,6 +58,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        
+        FBAppCall.handleDidBecomeActiveWithSession(PFFacebookUtils.session())
     }
 
     func applicationWillTerminate(application: UIApplication) {
