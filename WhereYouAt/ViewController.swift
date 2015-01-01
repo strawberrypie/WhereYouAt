@@ -11,6 +11,8 @@ import UIKit
 class ViewController: UIViewController, FBLoginViewDelegate {
 
     @IBOutlet var fbLoginView: FBLoginView!
+    @IBOutlet weak var usernameText: UITextField!
+    @IBOutlet weak var passwordText: UITextField!
     
     var firstName: String! = ""
     var lastName: String! = ""
@@ -27,6 +29,38 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     }
    
     @IBOutlet weak var buttonLogin: UIButton!
+    
+    @IBAction func signupButton(sender: AnyObject) {
+        performSegueWithIdentifier("moveToSignup", sender: self)
+    }
+    
+    @IBAction func loginNormal(sender: AnyObject) {
+        PFUser.logInWithUsernameInBackground(usernameText.text, password: passwordText.text) {
+            (user: PFUser!, loginError: NSError!) -> Void in
+            
+            if loginError == nil {
+                println("Log in")
+                
+                self.email = user.email
+                self.firstName = user["firstname"] as String
+                self.lastName = user["lastname"] as String
+                
+                //self.profilePictureID = user["profilePictureID"] as String
+                
+                /*
+                var installation: PFInstallation = PFInstallation.currentInstallation()
+                installation["user"] = PFUser.currentUser()
+                installation.saveInBackground()
+                */
+                
+                self.performSegueWithIdentifier("moveToMessages", sender: self)
+                
+            } else {
+                println("Can't log in")
+            }
+        }
+    }
+    
     
     @IBAction func buttonClick(sender: AnyObject) {
         var permissions: NSArray = ["public_profile", "email", "user_friends"]
@@ -52,13 +86,7 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 }
                 
                 var currentUser = PFUser.currentUser()
-                
-                currentUser["firstname"] = "kj"
-                currentUser["lastname"] = "kj"
-                currentUser.email = "test@test"
-
-                
-                
+            
                 FBRequestConnection.startForMeWithCompletionHandler {
                     (connection, user2, error) -> Void in
                     

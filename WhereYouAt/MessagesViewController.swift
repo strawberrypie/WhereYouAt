@@ -36,8 +36,15 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         var objects = query.findObjects()
         
         for object in objects{
+            var s = "profilePictureID"
+            println("self.email: \(self.email) email: \(object.email)")
             self.resultsEmail.append(object.email)
-            self.resultsProfilePicture.append(object.profilePictureID)
+            if object.objectForKey(s) == nil {
+                self.resultsProfilePicture.append("ca.abernathy")
+            } else {
+                self.resultsProfilePicture.append(object[s] as String)
+            }
+            
         }
         
         self.usersTable.reloadData()
@@ -83,11 +90,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     
         cell.username.text = self.resultsEmail[indexPath.row]
     
-        if self.resultsProfilePicture[indexPath.row].isEmpty {
-            cell.profileImage.profileID = self.resultsProfilePicture[indexPath.row]
-        } else {
-            cell.profileImage.profileID = "ca.abernathy"
-        }
+        cell.profileImage.profileID = self.resultsProfilePicture[indexPath.row]
+
         
         cell.newImage.hidden = false
         
