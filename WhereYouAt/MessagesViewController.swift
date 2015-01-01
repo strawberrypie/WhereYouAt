@@ -65,7 +65,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
             
             messageVC.otherUsername = self.otherUsername
             messageVC.otherProfilePictureID = self.otherProfilePictureID
-            
+            messageVC.username = self.email
+            messageVC.profilePictureID = self.profilePictureID
         }
     }
     

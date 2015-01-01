@@ -314,8 +314,11 @@
                                         <state key="normal" title="Send">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="sendBtn_click:" destination="3Yu-a6-60a" eventType="touchUpInside" id="fxc-G0-PKF"/>
+                                        </connections>
                                     </button>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bmg-Re-Efx">
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Type something..." minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bmg-Re-Efx">
                                         <rect key="frame" x="8" y="10" width="281" height="30"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -427,7 +430,7 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstAttribute="centerY" secondItem="ZIU-YU-cQp" secondAttribute="centerY" id="ETW-Mb-jWD"/>
                             <constraint firstItem="GbR-6w-gQz" firstAttribute="top" secondItem="MdM-gv-tmL" secondAttribute="bottom" id="Kxp-1X-fof"/>
@@ -447,6 +450,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="messageTable" destination="ZIU-YU-cQp" id="zsG-jF-Lsy"/>
+                        <outlet property="messageTextField" destination="Bmg-Re-Efx" id="l7j-z6-rgj"/>
                         <outlet property="sendBtn" destination="guA-io-cfh" id="D2a-vR-kne"/>
                         <outlet property="sendLocationBtn" destination="Cww-Ra-XiD" id="tEC-mv-k5c"/>
                     </connections>
