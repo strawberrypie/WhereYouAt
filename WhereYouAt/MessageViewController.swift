@@ -73,11 +73,11 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             if error == nil {
                 for object in objects {
-                    //self.senderMessages.insert(object.objectForKey("sender") as String, atIndex: 0)
-                    //self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
+                    self.senderMessages.insert(object.objectForKey("sender") as String, atIndex: 0)
+                    self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
                     
-                    self.senderMessages.append(object.objectForKey("sender") as String)
-                    self.theMessages.append(object.objectForKey("message") as String)
+                    //self.senderMessages.append(object.objectForKey("sender") as String)
+                    //self.theMessages.append(object.objectForKey("message") as String)
                     
                 }
                 self.messageTable.reloadData()
