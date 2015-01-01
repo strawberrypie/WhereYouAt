@@ -64,11 +64,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         if t.boolValue {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("receiverCell") as MessageCell
             cell.receiverTextView.text = "Test"
+            cell.receiverBtn.hidden = true
             t = false
         } else {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("senderCell") as MessageCell
             cell.senderTextView.text = "textkjasndkjasn kdan ksdnal sjdna skjdnal jsndlaksdnkasndkansd asndk amsldkm alksm dlak mldskaml skdmal aksmd lamdl amsl"
-            cell.senderBtn.hidden = true
+            
             t = true
         }
         
