@@ -24,6 +24,7 @@
 		2B4F78461A534CC3001923DC /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B4F78451A534CC3001923DC /* libsqlite3.dylib */; };
 		2B696C1B1A53F58E00906369 /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B696C1A1A53F58E00906369 /* MessageViewController.swift */; };
 		2B696C1D1A54004E00906369 /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B696C1C1A54004E00906369 /* SignupViewController.swift */; };
+		2BDA8CCB1A55DA1C00778707 /* MessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BDA8CCA1A55DA1C00778707 /* MessageCell.swift */; };
 		2BFB187D1A52C40F00B6CD15 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFB187C1A52C40F00B6CD15 /* AppDelegate.swift */; };
 		2BFB18801A52C41000B6CD15 /* WhereYouAt.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2BFB187E1A52C41000B6CD15 /* WhereYouAt.xcdatamodeld */; };
 		2BFB18821A52C41000B6CD15 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BFB18811A52C41000B6CD15 /* ViewController.swift */; };
@@ -65,6 +66,7 @@
 		2B4F78451A534CC3001923DC /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		2B696C1A1A53F58E00906369 /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
 		2B696C1C1A54004E00906369 /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		2BDA8CCA1A55DA1C00778707 /* MessageCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MessageCell.swift; path = ../MessageCell.swift; sourceTree = "<group>"; };
 		2BFB18771A52C40F00B6CD15 /* WhereYouAt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhereYouAt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2BFB187B1A52C40F00B6CD15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2BFB187C1A52C40F00B6CD15 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				2BFB187C1A52C40F00B6CD15 /* AppDelegate.swift */,
 				2BFB18811A52C41000B6CD15 /* ViewController.swift */,
 				2B696C1A1A53F58E00906369 /* MessageViewController.swift */,
+				2BDA8CCA1A55DA1C00778707 /* MessageCell.swift */,
 				2BFB1B191A52F03F00B6CD15 /* MessagesViewController.swift */,
 				2B4F78271A53120A001923DC /* UserCell.swift */,
 				2BFB18831A52C41000B6CD15 /* Main.storyboard */,
@@ -315,6 +318,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2BFB18821A52C41000B6CD15 /* ViewController.swift in Sources */,
+				2BDA8CCB1A55DA1C00778707 /* MessageCell.swift in Sources */,
 				2B696C1D1A54004E00906369 /* SignupViewController.swift in Sources */,
 				2BFB18801A52C41000B6CD15 /* WhereYouAt.xcdatamodeld in Sources */,
 				2BFB1B1A1A52F03F00B6CD15 /* MessagesViewController.swift in Sources */,

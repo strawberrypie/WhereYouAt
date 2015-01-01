@@ -25,7 +25,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
         //self.fbLoginView.delegate = self
         //self.fbLoginView.readPermissions = ["public_profile", "email", "user_friends"]
         
-        
     }
    
     @IBOutlet weak var buttonLogin: UIButton!
