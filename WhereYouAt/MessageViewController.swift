@@ -8,9 +8,8 @@
 
 import UIKit
 
-class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
-    
     var username: String!
     var profilePictureID: String!
     var otherUsername: String!
@@ -21,12 +20,14 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
   
     @IBOutlet weak var messageTextField: UITextField!
     @IBOutlet weak var sendLocationBtn: UIBarButtonItem!
+    @IBOutlet weak var messageView: UIView!
     
-    var messages: [String] = ["test", "kul" ,"jul"]
     var senderMessages: [String] = []
     var theMessages: [String] = []
-    
-    var t: Bool! = true
+
+    var messageTableOriginalY: CGFloat = 0
+    var messageTextFieldOriginalY: CGFloat = 0
+    var sendBtnOriginalY: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,19 +39,71 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         getMessages()
         
-        //self.messageTable.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        messageTableOriginalY = self.messageTable.frame.origin.y
         
-        /*
-        for var i = 3; i < 20; i++ {
-            //messages.append("asd")
+        messageTextFieldOriginalY = self.messageTextField.frame.origin.y
+        sendBtnOriginalY = self.sendBtn.frame.origin.y
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWasShown:", name: UIKeyboardDidShowNotification, object: nil)
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
+        
+        let tapScrollViewGesture = UITapGestureRecognizer(target: self, action: "didTapScrollView")
+        tapScrollViewGesture.numberOfTapsRequired = 1
+        messageTable.addGestureRecognizer(tapScrollViewGesture)
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        super.viewWillDisappear(animated)
+        NSNotificationCenter.defaultCenter().removeObserver(self)
+    }
+    
+    func didTapScrollView(){
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        messageTextField.resignFirstResponder()
+        return true
+    }
+    
+    func keyboardWasShown(notification: NSNotification){
+        let dict: NSDictionary = notification.userInfo!
+        let s: NSValue = dict.valueForKey(UIKeyboardFrameEndUserInfoKey) as NSValue
+        let rect: CGRect = s.CGRectValue()
+        
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveLinear, animations: {
             
-            messages.insert("asd", atIndex: 0)
-            self.messageTable.reloadData()
-        }
-        */
+            self.messageTable.frame.origin.y = self.messageTableOriginalY - rect.height
+            self.messageTextField.frame.origin.y = self.messageTextFieldOriginalY - rect.height
+            self.sendBtn.frame.origin.y = self.sendBtnOriginalY - rect.height
+            
+            var bottomOffset: CGPoint = CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height)
+            self.messageTable.setContentOffset(bottomOffset, animated: false)
+            
+            }, completion: {
+                (finished: Bool!) in
+                //
+        })
+    }
+    
+    func keyboardWillHide(notification: NSNotification){
+        let dict: NSDictionary = notification.userInfo!
+        let s: NSValue = dict.valueForKey(UIKeyboardFrameEndUserInfoKey) as NSValue
+        let rect: CGRect = s.CGRectValue()
         
-        
-        // Do any additional setup after loading the view.
+        UIView.animateWithDuration(0.3, delay: 0, options: .CurveLinear, animations: {
+            
+            self.messageTable.frame.origin.y = self.messageTableOriginalY
+            self.messageTextField.frame.origin.y = self.messageTextFieldOriginalY
+            self.sendBtn.frame.origin.y = self.sendBtnOriginalY
+            
+            var bottomOffset: CGPoint = CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height)
+            self.messageTable.setContentOffset(bottomOffset, animated: false)
+            
+            }, completion: {
+                (finished: Bool!) in
+                //
+        })
     }
 
     override func didReceiveMemoryWarning() {
@@ -93,12 +146,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     }
                 }*/
             }
-            
-            
         }
-        
-        
-        
     }
 
     @IBAction func sendBtn_click(sender: AnyObject) {
@@ -106,8 +154,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         if messageTextField.text == ""{
             println("No text")
         } else {
-            
-            
             
             var messageDBTable = PFObject(className: "Messages")
             messageDBTable["sender"] = username
@@ -138,6 +184,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
     }
     
+    
+    
     // MARK: TableView DELEGATE AND DATASOURCE
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -145,24 +193,18 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        //var cell:UITableViewCell = self.messageTable.dequeueReusableCellWithIdentifier("cell") as UITableViewCell
-        
-        //cell.textLabel?.text = self.messages[indexPath.row]
         var cell: MessageCell!
         
         if self.senderMessages[indexPath.row] == self.username {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("receiverCell") as MessageCell
-            cell.receiverTextView.text = theMessages[indexPath.row] //"Test"
+            cell.receiverTextView.text = theMessages[indexPath.row]
             cell.receiverBtn.hidden = true
-            //t = false
+            
         } else {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("senderCell") as MessageCell
-            cell.senderTextView.text = theMessages[indexPath.row] //"textkjasndkjasn kdan ksdnal sjdna skjdnal jsndlaksdnkasndkansd asndk amsldkm alksm dlak mldskaml skdmal aksmd lamdl amsl"
+            cell.senderTextView.text = theMessages[indexPath.row]
             cell.senderBtn.hidden = true
-            
-            //t = true
         }
-        
         
         return cell
     }

@@ -344,7 +344,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="VgW-qb-u6r" id="67q-a9-mW1">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" textAlignment="right" translatesAutoresizingMaskIntoConstraints="NO" id="l2F-0v-LXv">
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" textAlignment="right" translatesAutoresizingMaskIntoConstraints="NO" id="l2F-0v-LXv">
                                                     <rect key="frame" x="244" y="5" width="356" height="21"/>
                                                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -451,6 +451,7 @@
                     <connections>
                         <outlet property="messageTable" destination="ZIU-YU-cQp" id="zsG-jF-Lsy"/>
                         <outlet property="messageTextField" destination="Bmg-Re-Efx" id="l7j-z6-rgj"/>
+                        <outlet property="messageView" destination="MdM-gv-tmL" id="nFQ-Es-eHa"/>
                         <outlet property="sendBtn" destination="guA-io-cfh" id="D2a-vR-kne"/>
                         <outlet property="sendLocationBtn" destination="Cww-Ra-XiD" id="tEC-mv-k5c"/>
                     </connections>

@@ -10,7 +10,6 @@ import UIKit
 
 class ViewController: UIViewController, FBLoginViewDelegate {
 
-    @IBOutlet var fbLoginView: FBLoginView!
     @IBOutlet weak var usernameText: UITextField!
     @IBOutlet weak var passwordText: UITextField!
     
@@ -24,9 +23,17 @@ class ViewController: UIViewController, FBLoginViewDelegate {
         
         //self.fbLoginView.delegate = self
         //self.fbLoginView.readPermissions = ["public_profile", "email", "user_friends"]
-        
+        let tapScrollViewGesture = UITapGestureRecognizer(target: self, action: "didTapScrollView")
+        tapScrollViewGesture.numberOfTapsRequired = 1
+        self.view.addGestureRecognizer(tapScrollViewGesture)
     }
-   
+    
+
+    func didTapScrollView(){
+        self.view.endEditing(true)
+    }
+
+
     @IBOutlet weak var buttonLogin: UIButton!
     
     @IBAction func signupButton(sender: AnyObject) {
