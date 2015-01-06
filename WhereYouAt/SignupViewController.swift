@@ -53,7 +53,6 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                 println("Can't signup")
             }
         }
-
     }
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {

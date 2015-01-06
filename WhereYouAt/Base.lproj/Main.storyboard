@@ -282,17 +282,73 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Messages" id="cIZ-4r-Sls">
-                        <barButtonItem key="leftBarButtonItem" title="Logout" id="uEq-fi-Srf"/>
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="uEq-fi-Srf">
+                            <connections>
+                                <action selector="logoutBtn_clicked:" destination="zo3-ei-vfk" id="19x-8N-cGE"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Search" id="UUi-JJ-bIC">
+                            <connections>
+                                <action selector="searchBtn_clicked:" destination="zo3-ei-vfk" id="Elj-Gf-h83"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="usersTable" destination="Ku3-lb-C7K" id="r2c-wf-8hJ"/>
                         <segue destination="3Yu-a6-60a" kind="show" identifier="moveToMessage" id="hbz-Cs-9iA"/>
+                        <segue destination="vyX-9U-BCl" kind="show" identifier="moveToSearchVC" id="JeD-ex-zxh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LVh-Bi-9NG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1117" y="1169"/>
+        </scene>
+        <!--Search Table View Controller-->
+        <scene sceneID="SYm-gB-9u9">
+            <objects>
+                <tableViewController id="vyX-9U-BCl" customClass="SearchTableViewController" customModule="WhereYouAt" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Kqy-cm-uEo">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Search for your friends..." id="Mvy-qp-afD">
+                            <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="vyX-9U-BCl" id="kr5-Ua-Sfi"/>
+                            </connections>
+                        </searchBar>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="QMz-Ma-jr3">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="QMz-Ma-jr3" id="eOs-Xs-bhd">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="vyX-9U-BCl" id="DGT-nK-4fx"/>
+                            <outlet property="delegate" destination="vyX-9U-BCl" id="Cmg-a5-Nc2"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="searchDisplayController" destination="JLK-UB-SW5" id="Ydq-oZ-YeN"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="mV4-jp-Znu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="JLK-UB-SW5">
+                    <connections>
+                        <outlet property="delegate" destination="vyX-9U-BCl" id="obR-I0-pa3"/>
+                        <outlet property="searchBar" destination="Mvy-qp-afD" id="Wg7-yh-R9q"/>
+                        <outlet property="searchContentsController" destination="vyX-9U-BCl" id="Uqe-bh-iHt"/>
+                        <outlet property="searchResultsDataSource" destination="vyX-9U-BCl" id="UW8-ml-GtW"/>
+                        <outlet property="searchResultsDelegate" destination="vyX-9U-BCl" id="wdD-wP-xgm"/>
+                    </connections>
+                </searchDisplayController>
+            </objects>
+            <point key="canvasLocation" x="1117" y="1953"/>
         </scene>
         <!--<Username>-->
         <scene sceneID="nzG-vT-xzk">
@@ -361,6 +417,9 @@
                                                         <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="senderBtn_clicked:" destination="3Yu-a6-60a" eventType="touchUpInside" id="r6z-Y9-MQc"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
@@ -373,8 +432,8 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="senderBtn" destination="lWJ-mR-cXi" id="JEW-71-HOh"/>
-                                            <outlet property="senderTextView" destination="l2F-0v-LXv" id="HFB-hx-iJw"/>
+                                            <outlet property="senderBtn" destination="lWJ-mR-cXi" id="hrc-tH-K7c"/>
+                                            <outlet property="senderTextView" destination="l2F-0v-LXv" id="Lc9-49-BfQ"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="receiverCell" rowHeight="32" id="lra-pq-DOK" customClass="MessageCell" customModule="WhereYouAt" customModuleProvider="target">
@@ -394,6 +453,9 @@
                                                         <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <connections>
+                                                        <action selector="recieverBtn_clicked:" destination="3Yu-a6-60a" eventType="touchUpInside" id="Do7-eZ-lA2"/>
+                                                    </connections>
                                                 </button>
                                                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" scrollEnabled="NO" editable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uea-qt-MXp">
                                                     <rect key="frame" x="8" y="4" width="323" height="21"/>
@@ -418,8 +480,8 @@
                                             </variation>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="receiverBtn" destination="vGy-0V-nbg" id="BTF-mB-LZa"/>
-                                            <outlet property="receiverTextView" destination="uea-qt-MXp" id="cdu-WB-O6b"/>
+                                            <outlet property="receiverBtn" destination="vGy-0V-nbg" id="7SH-Yx-v5F"/>
+                                            <outlet property="receiverTextView" destination="uea-qt-MXp" id="G65-LM-JhU"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -446,7 +508,11 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="&lt;Username&gt;" id="ZUS-fu-knR">
-                        <barButtonItem key="rightBarButtonItem" title="Send location" id="Cww-Ra-XiD"/>
+                        <barButtonItem key="rightBarButtonItem" title="Send location" id="Cww-Ra-XiD">
+                            <connections>
+                                <action selector="sendLocation_click:" destination="3Yu-a6-60a" id="Y8z-RL-KBR"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="messageTable" destination="ZIU-YU-cQp" id="zsG-jF-Lsy"/>
@@ -454,11 +520,55 @@
                         <outlet property="messageView" destination="MdM-gv-tmL" id="nFQ-Es-eHa"/>
                         <outlet property="sendBtn" destination="guA-io-cfh" id="D2a-vR-kne"/>
                         <outlet property="sendLocationBtn" destination="Cww-Ra-XiD" id="tEC-mv-k5c"/>
+                        <segue destination="XXO-WY-qGg" kind="show" identifier="moveToMap" id="xSJ-hn-ebp"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GoL-Bo-ul1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1887" y="1169"/>
+        </scene>
+        <!--Come find me-h!-->
+        <scene sceneID="JWg-Cx-TPj">
+            <objects>
+                <viewController title="Come find me-h!" id="XXO-WY-qGg" customClass="MapViewController" customModule="WhereYouAt" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="gN3-J4-m8g"/>
+                        <viewControllerLayoutGuide type="bottom" id="gUj-PF-cab"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PVg-rw-Hco">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" mapType="standard" pitchEnabled="NO" showsUserLocation="YES" showsPointsOfInterest="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ttu-b2-Oo5">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jga-na-5QJ">
+                                <rect key="frame" x="277" y="538" width="60" height="30"/>
+                                <state key="normal" title="Find me!">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="findMeBtn_clicked:" destination="XXO-WY-qGg" eventType="touchUpInside" id="Zun-ej-CbL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ttu-b2-Oo5" firstAttribute="top" secondItem="PVg-rw-Hco" secondAttribute="top" constant="5" id="KmH-WQ-yLW"/>
+                            <constraint firstAttribute="centerX" secondItem="jga-na-5QJ" secondAttribute="centerX" id="PXd-Cp-BaV"/>
+                            <constraint firstItem="gUj-PF-cab" firstAttribute="top" secondItem="jga-na-5QJ" secondAttribute="bottom" constant="42" id="PXm-dA-ITd"/>
+                            <constraint firstAttribute="trailing" secondItem="Ttu-b2-Oo5" secondAttribute="trailing" constant="5" id="SCU-76-al7"/>
+                            <constraint firstItem="Ttu-b2-Oo5" firstAttribute="leading" secondItem="PVg-rw-Hco" secondAttribute="leading" constant="5" id="nSR-Ns-JeV"/>
+                            <constraint firstItem="gUj-PF-cab" firstAttribute="top" secondItem="Ttu-b2-Oo5" secondAttribute="bottom" constant="5" id="oRq-R6-bLp"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="mapView" destination="Ttu-b2-Oo5" id="ldK-Gw-tr1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gKg-vR-OUo" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2695" y="1169"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="K4u-eV-KDN">

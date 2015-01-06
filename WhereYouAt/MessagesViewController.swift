@@ -31,21 +31,36 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         self.resultsEmail.removeAll(keepCapacity: false)
         self.resultsProfilePicture.removeAll(keepCapacity: false)
         
-        let predicate = NSPredicate(format: "email != '\(self.email)'")
-        var query = PFQuery(className: "_User", predicate: predicate)
+        
+        /*
+        let predicate = NSPredicate(format: "username == '\(self.email)'")
+        var query = PFQuery(className: "Friends", predicate: predicate)
         var objects = query.findObjects()
         
         for object in objects{
-            var s = "profilePictureID"
-            println("self.email: \(self.email) email: \(object.email)")
-            self.resultsEmail.append(object.email)
-            if object.objectForKey(s) == nil {
+            self.resultsEmail.append(object["isFriendWith"] as String)
+            if object.objectForKey("isFriendWithProfileID") == nil{
                 self.resultsProfilePicture.append("ca.abernathy")
             } else {
-                self.resultsProfilePicture.append(object[s] as String)
+                self.resultsProfilePicture.append(object["isFriendWithProfileID"] as String)
             }
-            
         }
+        
+        */
+        
+        
+        let predicate = NSPredicate(format: "email != '\(self.email)'")
+        var query = PFQuery(className: "_User", predicate: predicate)
+        var objects = query.findObjects()
+        for object in objects{
+            self.resultsEmail.append(object.email)
+            if object.objectForKey("profilePictureID") == nil {
+                self.resultsProfilePicture.append("ca.abernathy")
+            } else {
+                self.resultsProfilePicture.append(object["profilePictureID"] as String)
+            }
+        }
+        
         
         self.usersTable.reloadData()
     }
@@ -67,7 +82,18 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
             messageVC.otherProfilePictureID = self.otherProfilePictureID
             messageVC.username = self.email
             messageVC.profilePictureID = self.profilePictureID
+        } else if segue.identifier == "moveToSearchVC" {
+            var search: SearchTableViewController = segue.destinationViewController as SearchTableViewController
+            search.email = self.email
+            search.profilePictureID = self.profilePictureID
         }
+    }
+    
+    @IBAction func searchBtn_clicked(sender: AnyObject) {
+         //self.performSegueWithIdentifier("moveToSearchVC", sender: self)
+    }
+        
+    @IBAction func logoutBtn_clicked(sender: AnyObject) {
     }
     
     // MARK: TableView DELEGATE AND DATASOURCE
@@ -90,10 +116,7 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         var cell: UserCell = tableView.dequeueReusableCellWithIdentifier("Cell") as UserCell
     
         cell.username.text = self.resultsEmail[indexPath.row]
-    
         cell.profileImage.profileID = self.resultsProfilePicture[indexPath.row]
-
-        
         cell.newImage.hidden = false
         
         return cell

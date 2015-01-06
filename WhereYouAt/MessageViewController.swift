@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import MapKit
 
-class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class MessageViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, CLLocationManagerDelegate {
 
     var username: String!
     var profilePictureID: String!
@@ -24,23 +25,25 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     var senderMessages: [String] = []
     var theMessages: [String] = []
-
+    var theLocations: [CLLocation] = []
+    
     var messageTableOriginalY: CGFloat = 0
     var messageTextFieldOriginalY: CGFloat = 0
     var sendBtnOriginalY: CGFloat = 0
+    
+    var locationHelper: LocationHelper!// = LocationHelper()
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         self.title = otherUsername
-        
+
         messageTable.delegate = self
         messageTable.dataSource = self
         
         getMessages()
         
         messageTableOriginalY = self.messageTable.frame.origin.y
-        
         messageTextFieldOriginalY = self.messageTextField.frame.origin.y
         sendBtnOriginalY = self.sendBtn.frame.origin.y
         
@@ -54,6 +57,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        self.locationManager.stopUpdatingLocation() 
+        
         NSNotificationCenter.defaultCenter().removeObserver(self)
     }
     
@@ -126,25 +131,22 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             
             if error == nil {
                 for object in objects {
-                    self.senderMessages.insert(object.objectForKey("sender") as String, atIndex: 0)
-                    self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
                     
+                    if object.objectForKey("message") as String == "" && object.objectForKey("location") != nil{
+                        self.senderMessages.insert(object.objectForKey("sender") as String, atIndex: 0)
+                        self.theMessages.insert("My location", atIndex: 0)
+                        var g: PFGeoPoint = object.objectForKey("location") as PFGeoPoint
+                        self.theLocations.insert(CLLocation(latitude: g.latitude, longitude: g.longitude), atIndex: 0)
+                    } else {
+                        self.senderMessages.insert(object.objectForKey("sender") as String, atIndex: 0)
+                        self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
+                        self.theLocations.insert(CLLocation(latitude: 0.0, longitude: 0.0), atIndex: 0)
+                    }
                     //self.senderMessages.append(object.objectForKey("sender") as String)
                     //self.theMessages.append(object.objectForKey("message") as String)
                     
                 }
                 self.messageTable.reloadData()
-                
-                
-                /*
-                for var i = 0; i < self.theMessages.count; i++ {
-                //for var i = 10; i >= 0; i-- {
-                    if self.senderMessages[i] == self.username {
-                        
-                    } else {
-                        
-                    }
-                }*/
             }
         }
     }
@@ -165,6 +167,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 if success.boolValue{
                     self.senderMessages.append(self.username)
                     self.theMessages.append(self.messageTextField.text)
+                    self.theLocations.append(CLLocation(latitude: 0.0, longitude: 0.0))
                     
                     self.messageTable.reloadData()
                     
@@ -174,18 +177,120 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 }
             }
             
-            
-            
             //println("msg: \(messageTextField.text)")
             //senderMessages.insert(username, atIndex: 0)
             //theMessages.insert(messageTextField.text, atIndex: 0)
-            
         }
+    }
+    
+    func startLocating(notification: NSNotification){
+        var d: Dictionary = notification.userInfo!
+        println("test: \(d)")
+        
+        var messageDBTable = PFObject(className: "Messages")
+        messageDBTable["sender"] = username
+        messageDBTable["receiver"] = otherUsername
+        messageDBTable["message"] = ""
+        messageDBTable["location"] = PFGeoPoint(location: CLLocation(latitude: d["latitude"] as Double, longitude: d["longitude"] as Double))
+        messageDBTable.saveInBackgroundWithBlock{
+            (success: Bool!, error: NSError!) -> Void in
+            
+            if success.boolValue{
+                self.senderMessages.append(self.username)
+                self.theMessages.append("<- My location")
+                self.theLocations.append(CLLocation(latitude: d["latitude"] as Double, longitude: d["longitude"] as Double))
+                
+                self.messageTable.setContentOffset(CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height), animated: false)
+                
+                self.messageTable.reloadData()
+                
+                NSNotificationCenter.defaultCenter().removeObserver(self, name: "ForceUpdateLocation", object: nil)
+            }
+        }
+
         
     }
     
+    @IBAction func sendLocation_click(sender: AnyObject) {
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: ("startLocating:"), name: "ForceUpdateLocation", object: nil)
+        
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.requestAlwaysAuthorization()
+
+        
+        self.startUpdatingLocation()
+    }
+    
+    let locationManager = CLLocationManager()
+    var latitude: Double! = 0.0
+    var longitude: Double! = 0.0
+    
+    func startUpdatingLocation(){
+        if CLLocationManager.locationServicesEnabled(){
+            self.locationManager.delegate = self
+            self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            self.locationManager.startUpdatingLocation()
+        }
+    }
+    
+    @IBAction func recieverBtn_clicked(sender: AnyObject) {
+        var button = sender as UIButton
+        var index = button.tag
+        
+        sendLatitude = theLocations[index].coordinate.latitude
+        sendLongitude = theLocations[index].coordinate.longitude
+        
+        performSegueWithIdentifier("moveToMap", sender: self)
+    }
+    
+    @IBAction func senderBtn_clicked(sender: AnyObject) {
+        // Self, put UIActionController to say something funny
+        
+        var titleOnAlert = ""
+        var messageOnAlert = "You already know where you are... right?"
+        
+        var alert = UIAlertController(title: nil, message: messageOnAlert, preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction = UIAlertAction(title: "...Ok :<", style: .Default, handler: nil)
+        alert.addAction(cancelAction)
+        
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    var sendLatitude: Double! = 0.0
+    var sendLongitude: Double! = 0.0
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "moveToMap" {
+            var mapVC: MapViewController = segue.destinationViewController as MapViewController
+            mapVC.destLatitude = sendLatitude
+            mapVC.destLongitude = sendLongitude
+        }
+    }
+    
+    // MARK: LocationManager DELEGATE
+    
+    func locationManager(manager: CLLocationManager!, didUpdateLocations locations: [AnyObject]!) {
+        var locationArray = locations as NSArray
+        var locationObj = locationArray.lastObject as CLLocation
+        var coord = locationObj.coordinate
+        
+        var span = MKCoordinateSpanMake(0.005, 0.005)
+        var region = MKCoordinateRegionMake(locationObj.coordinate, span)
+        
+        latitude = coord.latitude
+        longitude = coord.longitude
+        
+        if latitude != 0.0 && longitude != 0.0{
+            var p: [String: Double] = [:]
+            p["latitude"] = latitude
+            p["longitude"] = longitude
+            NSNotificationCenter.defaultCenter().postNotificationName("ForceUpdateLocation", object: self, userInfo: p)
+            self.locationManager.stopUpdatingLocation()
+        }
+    }
     
     
+ 
     // MARK: TableView DELEGATE AND DATASOURCE
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -196,17 +301,26 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         var cell: MessageCell!
         
         if self.senderMessages[indexPath.row] == self.username {
-            cell = self.messageTable.dequeueReusableCellWithIdentifier("receiverCell") as MessageCell
-            cell.receiverTextView.text = theMessages[indexPath.row]
-            cell.receiverBtn.hidden = true
-            
-        } else {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("senderCell") as MessageCell
             cell.senderTextView.text = theMessages[indexPath.row]
-            cell.senderBtn.hidden = true
+            if theLocations[indexPath.row].coordinate.latitude == 0.0 && theLocations[indexPath.row].coordinate.longitude == 0.0{
+                cell.senderBtn.hidden = true
+            } else {
+                cell.senderBtn.hidden = false
+                cell.senderBtn.tag = indexPath.row
+            }
+        } else {
+            cell = self.messageTable.dequeueReusableCellWithIdentifier("receiverCell") as MessageCell
+            cell.receiverTextView.text = theMessages[indexPath.row]
+            if theLocations[indexPath.row].coordinate.latitude == 0.0 && theLocations[indexPath.row].coordinate.longitude == 0.0{
+                cell.receiverBtn.hidden = true
+                
+            } else {
+                cell.receiverBtn.hidden = false
+                cell.receiverBtn.tag = indexPath.row
+            }
         }
-        
+
         return cell
     }
-
 }
