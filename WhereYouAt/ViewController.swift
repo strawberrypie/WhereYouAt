@@ -28,6 +28,9 @@ class ViewController: UIViewController, FBLoginViewDelegate {
         self.view.addGestureRecognizer(tapScrollViewGesture)
     }
     
+    override func viewWillAppear(animated: Bool) {
+        self.navigationItem.hidesBackButton = true
+    }
 
     func didTapScrollView(){
         self.view.endEditing(true)
@@ -53,11 +56,11 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 
                 //self.profilePictureID = user["profilePictureID"] as String
                 
-                /*
+                
                 var installation: PFInstallation = PFInstallation.currentInstallation()
                 installation["user"] = PFUser.currentUser()
                 installation.saveInBackground()
-                */
+                
                 
                 self.performSegueWithIdentifier("moveToMessages", sender: self)
                 
@@ -82,6 +85,7 @@ class ViewController: UIViewController, FBLoginViewDelegate {
             } else if user.isNew {
                 println("User signed up and logged in with Facebook")
                 
+                /*
                 if !PFFacebookUtils.isLinkedWithUser(user) {
                     PFFacebookUtils.linkUser(user, permissions:nil, {
                         (succeeded: Bool!, error: NSError!) -> Void in
@@ -89,7 +93,7 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                             NSLog("Woohoo, user logged in with Facebook!")
                         }
                     })
-                }
+                }*/
                 
                 var currentUser = PFUser.currentUser()
             
@@ -109,7 +113,11 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                         currentUser["profilePictureID"] = self.profilePictureID
                         
                         currentUser.saveInBackground()
-
+                        
+                        var installation: PFInstallation = PFInstallation.currentInstallation()
+                        installation["user"] = PFUser.currentUser()
+                        installation.saveInBackground()
+                        
                         self.performSegueWithIdentifier("moveToMessages", sender: self)
                         
                         //println("c: \(currentUser.objectId)")
@@ -125,6 +133,11 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 self.lastName = currentUser["lastname"] as String
                 self.email = currentUser.email
                 self.profilePictureID = currentUser["profilePictureID"] as String
+                
+                
+                var installation: PFInstallation = PFInstallation.currentInstallation()
+                installation["user"] = PFUser.currentUser()
+                installation.saveInBackground()
                 
                 self.performSegueWithIdentifier("moveToMessages", sender: self)
             }

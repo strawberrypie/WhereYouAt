@@ -48,6 +48,7 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         
         */
         
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "showNewMessageImage", name: "showNewImage", object: nil)
         
         let predicate = NSPredicate(format: "email != '\(self.email)'")
         var query = PFQuery(className: "_User", predicate: predicate)
@@ -62,6 +63,12 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         }
         
         
+        
+        self.usersTable.reloadData()
+    }
+    
+    func showNewMessageImage(){
+        isNewMessage = true
         self.usersTable.reloadData()
     }
     
@@ -94,6 +101,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     }
         
     @IBAction func logoutBtn_clicked(sender: AnyObject) {
+        PFUser.logOut()
+        self.navigationController?.popToRootViewControllerAnimated(true)
     }
     
     // MARK: TableView DELEGATE AND DATASOURCE
@@ -104,6 +113,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         otherUsername = self.resultsEmail[indexPath.row]
         otherProfilePictureID = self.resultsProfilePicture[indexPath.row]
         
+        cell.newImage.hidden = true
+        
         self.performSegueWithIdentifier("moveToMessage", sender: self)
     }
     
@@ -111,13 +122,20 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         return resultsEmail.count
     }
     
+    var isNewMessage: Bool! = false
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         var cell: UserCell = tableView.dequeueReusableCellWithIdentifier("Cell") as UserCell
     
         cell.username.text = self.resultsEmail[indexPath.row]
         cell.profileImage.profileID = self.resultsProfilePicture[indexPath.row]
-        cell.newImage.hidden = false
+        
+        if isNewMessage.boolValue {
+            cell.newImage.hidden = false
+        } else {
+            cell.newImage.hidden = true
+        }
         
         return cell
     }

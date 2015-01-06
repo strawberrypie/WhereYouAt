@@ -21,10 +21,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.setApplicationId("wMNwNpfj87bX3Dia3mDqXiczJkmay2q9xNN7Fa6s", clientKey: "Jj4ycl8W8E7JK55iXhBJLaOPv9xHi944M4FVtsd1")
         PFFacebookUtils.initializeFacebook()
         
-        FBLoginView.self
-        FBProfilePictureView.self
+        let notificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
+        let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
+        
+        UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
+        
+        //FBLoginView.self
+        //FBProfilePictureView.self
         
         return true
+    }
+    
+    func application(application: UIApplication, didRegisterUserNotificationSettings notificationSettings: UIUserNotificationSettings) {
+        UIApplication.sharedApplication().registerForRemoteNotifications()
+    }
+    
+    func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
+        
+        let currentInstallation: PFInstallation = PFInstallation.currentInstallation()
+        currentInstallation.setDeviceTokenFromData(deviceToken)
+        currentInstallation.saveInBackground()
+        
+    }
+    
+    func application(application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: NSError) {
+        println("Error \(error.localizedDescription)")
+        
+    }
+    
+    func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
+        
+        NSNotificationCenter.defaultCenter().postNotificationName("getMessages", object: nil)
+        NSNotificationCenter.defaultCenter().postNotificationName("showNewImage", object: nil)
     }
     
 

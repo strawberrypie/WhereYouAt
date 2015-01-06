@@ -42,11 +42,9 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
             if signupError == nil{
                 println("Signup")
                 
-                /*
                 var installation: PFInstallation = PFInstallation.currentInstallation()
                 installation["user"] = PFUser.currentUser()
                 installation.saveInBackground()
-                */
                 
                 self.performSegueWithIdentifier("moveToMessages2", sender: self)
             } else {

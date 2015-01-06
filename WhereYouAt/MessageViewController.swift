@@ -53,6 +53,13 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let tapScrollViewGesture = UITapGestureRecognizer(target: self, action: "didTapScrollView")
         tapScrollViewGesture.numberOfTapsRequired = 1
         messageTable.addGestureRecognizer(tapScrollViewGesture)
+        
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: "getMessagesFunc", name: "getMessages", object: nil)
+    }
+    
+    func getMessagesFunc(){
+        getMessages()
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -117,6 +124,10 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func getMessages(){
+        self.senderMessages.removeAll(keepCapacity: false)
+        self.theMessages.removeAll(keepCapacity: false)
+        self.theLocations.removeAll(keepCapacity: false)
+        
         
         let innerP1 = NSPredicate(format: "sender = '\(username)' AND receiver = '\(otherUsername)'")
         var innerQ1: PFQuery = PFQuery(className: "Messages", predicate: innerP1)
@@ -146,6 +157,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     //self.theMessages.append(object.objectForKey("message") as String)
                     
                 }
+                
+                self.messageTable.setContentOffset(CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height), animated: false)
                 self.messageTable.reloadData()
             }
         }
@@ -165,6 +178,19 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 (success: Bool!, error: NSError!) -> Void in
                 
                 if success.boolValue{
+                    
+                    var uQuery: PFQuery = PFUser.query()
+                    uQuery.whereKey("email", equalTo: self.otherUsername)
+                    
+                    var pushQuery: PFQuery = PFInstallation.query()
+                    pushQuery.whereKey("user", matchesQuery: uQuery)
+                    
+                    var push: PFPush = PFPush()
+                    push.setQuery(pushQuery)
+                    push.setMessage("New message from \(self.username)")
+                    push.sendPush(nil)
+                    println("Push sent")
+                    
                     self.senderMessages.append(self.username)
                     self.theMessages.append(self.messageTextField.text)
                     self.theLocations.append(CLLocation(latitude: 0.0, longitude: 0.0))
