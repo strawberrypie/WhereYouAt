@@ -31,7 +31,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         self.resultsEmail.removeAll(keepCapacity: false)
         self.resultsProfilePicture.removeAll(keepCapacity: false)
         
-        
         /*
         let predicate = NSPredicate(format: "username == '\(self.email)'")
         var query = PFQuery(className: "Friends", predicate: predicate)
@@ -45,7 +44,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
                 self.resultsProfilePicture.append(object["isFriendWithProfileID"] as String)
             }
         }
-        
         */
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showNewMessageImage", name: "showNewImage", object: nil)
@@ -61,8 +59,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
                 self.resultsProfilePicture.append(object["profilePictureID"] as String)
             }
         }
-        
-        
         
         self.usersTable.reloadData()
     }
@@ -84,7 +80,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "moveToMessage" {
             var messageVC: MessageViewController = segue.destinationViewController as MessageViewController
-            
             messageVC.otherUsername = self.otherUsername
             messageVC.otherProfilePictureID = self.otherProfilePictureID
             messageVC.username = self.email

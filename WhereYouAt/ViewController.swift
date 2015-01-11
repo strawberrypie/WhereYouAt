@@ -21,8 +21,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //self.fbLoginView.delegate = self
-        //self.fbLoginView.readPermissions = ["public_profile", "email", "user_friends"]
         let tapScrollViewGesture = UITapGestureRecognizer(target: self, action: "didTapScrollView")
         tapScrollViewGesture.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(tapScrollViewGesture)
@@ -35,7 +33,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     func didTapScrollView(){
         self.view.endEditing(true)
     }
-
 
     @IBOutlet weak var buttonLogin: UIButton!
     
@@ -54,9 +51,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 self.firstName = user["firstname"] as String
                 self.lastName = user["lastname"] as String
                 
-                //self.profilePictureID = user["profilePictureID"] as String
-                
-                
                 var installation: PFInstallation = PFInstallation.currentInstallation()
                 installation["user"] = PFUser.currentUser()
                 installation.saveInBackground()
@@ -69,7 +63,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
             }
         }
     }
-    
     
     @IBAction func buttonClick(sender: AnyObject) {
         var permissions: NSArray = ["public_profile", "email", "user_friends"]
@@ -84,16 +77,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 }
             } else if user.isNew {
                 println("User signed up and logged in with Facebook")
-                
-                /*
-                if !PFFacebookUtils.isLinkedWithUser(user) {
-                    PFFacebookUtils.linkUser(user, permissions:nil, {
-                        (succeeded: Bool!, error: NSError!) -> Void in
-                        if succeeded.boolValue {
-                            NSLog("Woohoo, user logged in with Facebook!")
-                        }
-                    })
-                }*/
                 
                 var currentUser = PFUser.currentUser()
             
@@ -119,11 +102,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                         installation.saveInBackground()
                         
                         self.performSegueWithIdentifier("moveToMessages", sender: self)
-                        
-                        //println("c: \(currentUser.objectId)")
-                        //println("f: \(self.firstName), l: \(self.lastName), e: \(self.email)")
-                        
-                        //self.performSegueWithIdentifier("moveToMessages", sender: self)
                     }
                 }
             } else {
@@ -133,7 +111,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 self.lastName = currentUser["lastname"] as String
                 self.email = currentUser.email
                 self.profilePictureID = currentUser["profilePictureID"] as String
-                
                 
                 var installation: PFInstallation = PFInstallation.currentInstallation()
                 installation["user"] = PFUser.currentUser()
@@ -153,41 +130,6 @@ class ViewController: UIViewController, FBLoginViewDelegate {
             messagesVC.profilePictureID = self.profilePictureID
         }
     }
-
-    
-/*
-    func loginViewShowingLoggedInUser(loginView: FBLoginView!) {
-        println("Login")
-    }
-    
-    func loginViewFetchedUserInfo(loginView: FBLoginView!, user: FBGraphUser!) {
-        println("Username: \(user.name)")
-        //self.profilePictureView.profileID = user.objectID
-        
-        self.firstName = user.first_name
-        self.lastName = user.last_name
-        
-        FBRequestConnection.startForMeWithCompletionHandler {
-            (connection, user, error) -> Void in
-            
-            if error == nil {
-                self.email = user.objectForKey("email") as String
-                self.profilePictureID = user.objectID
-                self.performSegueWithIdentifier("moveToMessages", sender: self)
-            }
-        }
-    }
-    
-    
-    func loginViewShowingLoggedOutUser(loginView: FBLoginView!) {
-        println("Logout")
-        //self.profilePictureView.profileID = nil
-    }
-    
-    func loginView(loginView: FBLoginView!, handleError error: NSError!) {
-        println("Error: \(error.localizedDescription)")
-    }
-*/
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

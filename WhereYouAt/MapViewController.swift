@@ -57,6 +57,8 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         var destination: MKMapItem = MKMapItem(placemark: destinationPlacemark)
         directionsRequest.setDestination(destination)
         
+        directionsRequest.transportType = MKDirectionsTransportType.Automobile
+        
         var directions = MKDirections(request: directionsRequest)
         
         directions.calculateDirectionsWithCompletionHandler ({
@@ -69,7 +71,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
             self.currentRoute = response?.routes.first as MKRoute
             self.plotRouteOnMap(self.currentRoute)
         })
-
     }
     
     func plotRouteOnMap(route: MKRoute){
@@ -84,7 +85,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func mapView(mapView: MKMapView!, rendererForOverlay overlay: MKOverlay!) -> MKOverlayRenderer! {
         if overlay is MKPolyline{
-            
             var pr = MKPolylineRenderer(overlay: overlay)
             pr.strokeColor = UIColor.blueColor().colorWithAlphaComponent(0.5)
             pr.lineWidth = 5
@@ -114,7 +114,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     @IBAction func findMeBtn_clicked(sender: AnyObject) {

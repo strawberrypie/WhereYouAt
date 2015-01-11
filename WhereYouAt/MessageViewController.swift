@@ -31,8 +31,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     var messageTextFieldOriginalY: CGFloat = 0
     var sendBtnOriginalY: CGFloat = 0
     
-    var locationHelper: LocationHelper!// = LocationHelper()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -120,14 +118,12 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func getMessages(){
         self.senderMessages.removeAll(keepCapacity: false)
         self.theMessages.removeAll(keepCapacity: false)
         self.theLocations.removeAll(keepCapacity: false)
-        
         
         let innerP1 = NSPredicate(format: "sender = '\(username)' AND receiver = '\(otherUsername)'")
         var innerQ1: PFQuery = PFQuery(className: "Messages", predicate: innerP1)
@@ -153,9 +149,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                         self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
                         self.theLocations.insert(CLLocation(latitude: 0.0, longitude: 0.0), atIndex: 0)
                     }
-                    //self.senderMessages.append(object.objectForKey("sender") as String)
-                    //self.theMessages.append(object.objectForKey("message") as String)
-                    
                 }
                 
                 self.messageTable.setContentOffset(CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height), animated: false)
@@ -202,10 +195,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                     self.messageTextField.text = ""
                 }
             }
-            
-            //println("msg: \(messageTextField.text)")
-            //senderMessages.insert(username, atIndex: 0)
-            //theMessages.insert(messageTextField.text, atIndex: 0)
         }
     }
     
@@ -233,8 +222,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 NSNotificationCenter.defaultCenter().removeObserver(self, name: "ForceUpdateLocation", object: nil)
             }
         }
-
-        
     }
     
     @IBAction func sendLocation_click(sender: AnyObject) {
@@ -243,7 +230,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.requestAlwaysAuthorization()
 
-        
         self.startUpdatingLocation()
     }
     
@@ -315,8 +301,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
-    
- 
     // MARK: TableView DELEGATE AND DATASOURCE
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

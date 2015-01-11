@@ -10,7 +10,6 @@ import UIKit
 
 class UserCell: UITableViewCell {
 
-
     @IBOutlet weak var profileImage: FBProfilePictureView!
     @IBOutlet weak var newImage: UIImageView!
     @IBOutlet weak var username: UILabel!
@@ -29,5 +28,4 @@ class UserCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
 }
