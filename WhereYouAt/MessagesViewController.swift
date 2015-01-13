@@ -25,6 +25,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     //var resultsFirstname: [String]! = []
     //var resultsLastname: [String]! = []
     
+    var isNewMessage: Bool! = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -48,6 +50,8 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "showNewMessageImage", name: "showNewImage", object: nil)
         
+        
+        // Collect all the users and view them in the table view.
         let predicate = NSPredicate(format: "email != '\(self.email)'")
         var query = PFQuery(className: "_User", predicate: predicate)
         var objects = query.findObjects()
@@ -76,7 +80,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         self.navigationItem.hidesBackButton = true
     }
     
-    
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "moveToMessage" {
             var messageVC: MessageViewController = segue.destinationViewController as MessageViewController
@@ -88,14 +91,18 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
             var search: SearchTableViewController = segue.destinationViewController as SearchTableViewController
             search.email = self.email
             search.profilePictureID = self.profilePictureID
+        } else if segue.identifier == "moveToHistoryVC" {
+            var history: HistoryViewController = segue.destinationViewController as HistoryViewController
         }
     }
     
     @IBAction func searchBtn_clicked(sender: AnyObject) {
          //self.performSegueWithIdentifier("moveToSearchVC", sender: self)
+        self.performSegueWithIdentifier("moveToHistoryVC", sender: self)
     }
         
     @IBAction func logoutBtn_clicked(sender: AnyObject) {
+        // Log out and go back to the root view controller which is the login.
         PFUser.logOut()
         self.navigationController?.popToRootViewControllerAnimated(true)
     }
@@ -116,8 +123,6 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultsEmail.count
     }
-    
-    var isNewMessage: Bool! = false
     
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         

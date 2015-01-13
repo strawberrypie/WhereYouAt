@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C81f" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BUV-l2-J1Y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C94b" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="BUV-l2-J1Y">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6246"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -193,7 +193,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="120" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ku3-lb-C7K">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="120" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="Ku3-lb-C7K">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
@@ -268,18 +268,26 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="DEj-4E-jC5" firstAttribute="top" secondItem="Ku3-lb-C7K" secondAttribute="bottom" id="44T-vR-Tad"/>
+                            <constraint firstAttribute="trailing" secondItem="Ku3-lb-C7K" secondAttribute="trailing" id="Mw9-Ee-ERO"/>
+                            <constraint firstItem="Ku3-lb-C7K" firstAttribute="leading" secondItem="gJT-E5-fo8" secondAttribute="leading" id="Pkf-Yh-Ds6"/>
                             <constraint firstItem="Ku3-lb-C7K" firstAttribute="leading" secondItem="gJT-E5-fo8" secondAttribute="leading" id="Urr-tA-J4P"/>
                             <constraint firstAttribute="centerY" secondItem="Ku3-lb-C7K" secondAttribute="centerY" id="bEL-cN-bRV"/>
                             <constraint firstAttribute="centerX" secondItem="Ku3-lb-C7K" secondAttribute="centerX" id="fDp-cg-u8G"/>
-                            <constraint firstItem="Ku3-lb-C7K" firstAttribute="top" secondItem="QQq-qM-dQ9" secondAttribute="bottom" constant="100" id="nEL-CB-23f"/>
+                            <constraint firstItem="Ku3-lb-C7K" firstAttribute="top" secondItem="QQq-qM-dQ9" secondAttribute="bottom" constant="40" id="nEL-CB-23f"/>
                             <constraint firstItem="Ku3-lb-C7K" firstAttribute="top" secondItem="QQq-qM-dQ9" secondAttribute="bottom" id="nP3-kv-HGb"/>
+                            <constraint firstItem="Ku3-lb-C7K" firstAttribute="top" secondItem="gJT-E5-fo8" secondAttribute="top" id="xRy-W0-BZw"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
+                                <exclude reference="bEL-cN-bRV"/>
+                                <exclude reference="fDp-cg-u8G"/>
                                 <exclude reference="nEL-CB-23f"/>
+                                <exclude reference="nP3-kv-HGb"/>
                             </mask>
                         </variation>
                     </view>
+                    <tabBarItem key="tabBarItem" title="Item" id="JoY-Em-7uM"/>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Messages" id="cIZ-4r-Sls">
                         <barButtonItem key="leftBarButtonItem" title="Logout" id="uEq-fi-Srf">
@@ -287,7 +295,7 @@
                                 <action selector="logoutBtn_clicked:" destination="zo3-ei-vfk" id="19x-8N-cGE"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" title="Search" id="UUi-JJ-bIC">
+                        <barButtonItem key="rightBarButtonItem" title="History" id="UUi-JJ-bIC">
                             <connections>
                                 <action selector="searchBtn_clicked:" destination="zo3-ei-vfk" id="Elj-Gf-h83"/>
                             </connections>
@@ -298,11 +306,38 @@
                         <outlet property="usersTable" destination="Ku3-lb-C7K" id="r2c-wf-8hJ"/>
                         <segue destination="3Yu-a6-60a" kind="show" identifier="moveToMessage" id="hbz-Cs-9iA"/>
                         <segue destination="vyX-9U-BCl" kind="show" identifier="moveToSearchVC" id="JeD-ex-zxh"/>
+                        <segue destination="J8w-CP-et6" kind="show" identifier="moveToHistoryVC" id="vN8-Rc-GWI"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LVh-Bi-9NG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1117" y="1169"/>
+        </scene>
+        <!--History View Controller-->
+        <scene sceneID="04v-2G-dYA">
+            <objects>
+                <tableViewController id="J8w-CP-et6" customClass="HistoryViewController" customModule="WhereYouAt" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Yop-VL-1ud">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" id="cHn-cm-p1t">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="cHn-cm-p1t" id="swY-d0-Ezj">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="J8w-CP-et6" id="bqi-gc-CG7"/>
+                            <outlet property="delegate" destination="J8w-CP-et6" id="ngg-dL-o1g"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ofy-9I-Ura" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="325" y="1959"/>
         </scene>
         <!--Search Table View Controller-->
         <scene sceneID="SYm-gB-9u9">
@@ -593,6 +628,6 @@
         <image name="New.png" width="78" height="78"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="0hX-oe-vaY"/>
+        <segue reference="sC3-5n-TYg"/>
     </inferredMetricsTieBreakers>
 </document>

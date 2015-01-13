@@ -21,6 +21,22 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if PFUser.currentUser() != nil {
+            var u = PFUser.currentUser()
+            
+            self.email = u.email
+            self.firstName = u["firstname"] as String
+            self.lastName = u["lastname"] as String
+            
+            if u["profilePictureID"] != nil {
+                self.profilePictureID = u["profilePictureID"] as String
+            } else {
+                self.profilePictureID = "ca.abernathy"
+            }
+            
+            self.performSegueWithIdentifier("moveToMessages", sender: self)
+        }
+        
         let tapScrollViewGesture = UITapGestureRecognizer(target: self, action: "didTapScrollView")
         tapScrollViewGesture.numberOfTapsRequired = 1
         self.view.addGestureRecognizer(tapScrollViewGesture)
@@ -28,6 +44,8 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     
     override func viewWillAppear(animated: Bool) {
         self.navigationItem.hidesBackButton = true
+        usernameText.text = ""
+        passwordText.text = ""
     }
 
     func didTapScrollView(){
@@ -41,6 +59,8 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     }
     
     @IBAction func loginNormal(sender: AnyObject) {
+        
+        // Normal login with username + password created with the apps signup.
         PFUser.logInWithUsernameInBackground(usernameText.text, password: passwordText.text) {
             (user: PFUser!, loginError: NSError!) -> Void in
             
@@ -51,10 +71,11 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 self.firstName = user["firstname"] as String
                 self.lastName = user["lastname"] as String
                 
+                // Install and register the current user to be able to receive push notifications.
                 var installation: PFInstallation = PFInstallation.currentInstallation()
                 installation["user"] = PFUser.currentUser()
+                // If exist, do nothing.
                 installation.saveInBackground()
-                
                 
                 self.performSegueWithIdentifier("moveToMessages", sender: self)
                 
@@ -65,8 +86,10 @@ class ViewController: UIViewController, FBLoginViewDelegate {
     }
     
     @IBAction func buttonClick(sender: AnyObject) {
+        // Set permissions for what the app is able to use from the users facebook page.
         var permissions: NSArray = ["public_profile", "email", "user_friends"]
         
+        // Login with facebook.
         PFFacebookUtils.logInWithPermissions(permissions) {
             (user: PFUser!, error: NSError!) -> Void in
             if !(user != nil) {
@@ -80,6 +103,9 @@ class ViewController: UIViewController, FBLoginViewDelegate {
                 
                 var currentUser = PFUser.currentUser()
             
+                // If the user is new in the Parse DB, save all the info needed to create an 
+                // account and then move to the messages.
+                
                 FBRequestConnection.startForMeWithCompletionHandler {
                     (connection, user2, error) -> Void in
                     

@@ -24,12 +24,14 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Request to use the locationmanager.
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.requestAlwaysAuthorization()
         
         mapView.delegate = self
         mapView.showsUserLocation = true
         
+        // If the service is enabled start update the location and create route between the two points.
         if CLLocationManager.locationServicesEnabled() {
             self.locationManager.delegate = self
             self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
@@ -42,21 +44,26 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     override func viewDidDisappear(animated: Bool) {
         super.viewDidDisappear(animated)
         
+        // Stop udating location when view disappear.
         self.locationManager.stopUpdatingLocation()
     }
     
     func handleRoute(){
         var directionsRequest = MKDirectionsRequest()
         
+        // Get the coords for my current location.
         var source: MKMapItem = MKMapItem.mapItemForCurrentLocation()
         directionsRequest.setSource(source)
         
         //var destinationCoords = CLLocationCoordinate2DMake(59.33296, 17.98035) // Alvik koordinationer för test.
+        
+        // The coords for the destination.
         var destinationCoords = CLLocationCoordinate2DMake(destLatitude, destLongitude)
         var destinationPlacemark = MKPlacemark(coordinate: destinationCoords, addressDictionary: nil)
         var destination: MKMapItem = MKMapItem(placemark: destinationPlacemark)
         directionsRequest.setDestination(destination)
         
+        // Select which type of transport.
         directionsRequest.transportType = MKDirectionsTransportType.Automobile
         
         var directions = MKDirections(request: directionsRequest)
@@ -75,10 +82,13 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
     
     func plotRouteOnMap(route: MKRoute){
         println("Plot")
+        
+        // If route already there, remove it.
         if routeOverlay != nil{
             self.mapView.removeOverlay(routeOverlay)
         }
         
+        // Create the route between the points.
         routeOverlay = route.polyline
         self.mapView.addOverlay(routeOverlay)
     }
@@ -105,6 +115,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, CLLocationManagerD
         var span = MKCoordinateSpanMake(0.005, 0.005)
         var region = MKCoordinateRegionMake(locationObj.coordinate, span)
     
+        // Center at my location
         if isCenterMe.boolValue{
             mapView.region = region
             mapView.setCenterCoordinate(coord, animated: true)

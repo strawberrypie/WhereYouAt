@@ -21,13 +21,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Parse.setApplicationId("wMNwNpfj87bX3Dia3mDqXiczJkmay2q9xNN7Fa6s", clientKey: "Jj4ycl8W8E7JK55iXhBJLaOPv9xHi944M4FVtsd1")
         PFFacebookUtils.initializeFacebook()
         
+        // Select what type of notification that will be available.
         let notificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound
         let notificationSettings: UIUserNotificationSettings = UIUserNotificationSettings(forTypes: notificationTypes, categories: nil)
         
+        // Register for notifcation
         UIApplication.sharedApplication().registerUserNotificationSettings(notificationSettings)
-        
-        //FBLoginView.self
-        //FBProfilePictureView.self
         
         return true
     }
@@ -38,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: NSData) {
         
+        // Register the app to be able to receive and send push notifications.
         let currentInstallation: PFInstallation = PFInstallation.currentInstallation()
         currentInstallation.setDeviceTokenFromData(deviceToken)
         currentInstallation.saveInBackground()
@@ -51,6 +51,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(application: UIApplication, didReceiveRemoteNotification userInfo: [NSObject : AnyObject]) {
         
+        // If a remote push notification is received, notify these methods.
         NSNotificationCenter.defaultCenter().postNotificationName("getMessages", object: nil)
         NSNotificationCenter.defaultCenter().postNotificationName("showNewImage", object: nil)
     }
@@ -58,11 +59,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, openURL url: NSURL, sourceApplication: String?, annotation: AnyObject?) -> Bool {
         
-        //var wasHandled: Bool = FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication)
-        //return wasHandled
-        
         return FBAppCall.handleOpenURL(url, sourceApplication: sourceApplication, withSession: PFFacebookUtils.session())
-        
     }
 
     func applicationWillResignActive(application: UIApplication) {

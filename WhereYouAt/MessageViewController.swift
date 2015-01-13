@@ -45,6 +45,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         messageTextFieldOriginalY = self.messageTextField.frame.origin.y
         sendBtnOriginalY = self.sendBtn.frame.origin.y
         
+        
+        // Adding two observers/listener to see if the keyboard shows or not.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWasShown:", name: UIKeyboardDidShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
         
@@ -52,7 +54,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         tapScrollViewGesture.numberOfTapsRequired = 1
         messageTable.addGestureRecognizer(tapScrollViewGesture)
         
-        
+        // Adding an observer that listen to push notifications.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "getMessagesFunc", name: "getMessages", object: nil)
     }
     
@@ -81,8 +83,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let s: NSValue = dict.valueForKey(UIKeyboardFrameEndUserInfoKey) as NSValue
         let rect: CGRect = s.CGRectValue()
         
+        // Move the components above the keyboard.
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveLinear, animations: {
-            
             self.messageTable.frame.origin.y = self.messageTableOriginalY - rect.height
             self.messageTextField.frame.origin.y = self.messageTextFieldOriginalY - rect.height
             self.sendBtn.frame.origin.y = self.sendBtnOriginalY - rect.height
@@ -101,8 +103,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         let s: NSValue = dict.valueForKey(UIKeyboardFrameEndUserInfoKey) as NSValue
         let rect: CGRect = s.CGRectValue()
         
+        // Move the components back to original.
         UIView.animateWithDuration(0.3, delay: 0, options: .CurveLinear, animations: {
-            
             self.messageTable.frame.origin.y = self.messageTableOriginalY
             self.messageTextField.frame.origin.y = self.messageTextFieldOriginalY
             self.sendBtn.frame.origin.y = self.sendBtnOriginalY
@@ -125,6 +127,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.theMessages.removeAll(keepCapacity: false)
         self.theLocations.removeAll(keepCapacity: false)
         
+        // Filter out the right messages for the conversation.
         let innerP1 = NSPredicate(format: "sender = '\(username)' AND receiver = '\(otherUsername)'")
         var innerQ1: PFQuery = PFQuery(className: "Messages", predicate: innerP1)
         
@@ -149,35 +152,41 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                         self.theMessages.insert(object.objectForKey("message") as String, atIndex: 0)
                         self.theLocations.insert(CLLocation(latitude: 0.0, longitude: 0.0), atIndex: 0)
                     }
+                    
+                    // Set the view to focus on the new/latest message.
+                    self.messageTable.setContentOffset(CGPointMake(0, self.messageTable.contentSize.height+40 - self.messageTable.bounds.size.height), animated: false)
+                    self.messageTable.reloadData()
                 }
-                
-                self.messageTable.setContentOffset(CGPointMake(0, self.messageTable.contentSize.height - self.messageTable.bounds.size.height), animated: false)
-                self.messageTable.reloadData()
             }
         }
     }
 
     @IBAction func sendBtn_click(sender: AnyObject) {
-        
+        // If no text send nothing.
         if messageTextField.text == ""{
             println("No text")
         } else {
             
+            // Create an object for the Messages table in DB.
             var messageDBTable = PFObject(className: "Messages")
             messageDBTable["sender"] = username
             messageDBTable["receiver"] = otherUsername
             messageDBTable["message"] = self.messageTextField.text
+            
+            // Save the data to the DB.
             messageDBTable.saveInBackgroundWithBlock{
                 (success: Bool!, error: NSError!) -> Void in
                 
                 if success.boolValue{
                     
+                    // Create two querys to prepare for the push
                     var uQuery: PFQuery = PFUser.query()
                     uQuery.whereKey("email", equalTo: self.otherUsername)
                     
                     var pushQuery: PFQuery = PFInstallation.query()
                     pushQuery.whereKey("user", matchesQuery: uQuery)
                     
+                    // Push a notification to the receiver with a message.
                     var push: PFPush = PFPush()
                     push.setQuery(pushQuery)
                     push.setMessage("New message from \(self.username)")
@@ -202,10 +211,13 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         var d: Dictionary = notification.userInfo!
         println("test: \(d)")
         
+        // Create an object for the Messages table in DB.
         var messageDBTable = PFObject(className: "Messages")
         messageDBTable["sender"] = username
         messageDBTable["receiver"] = otherUsername
         messageDBTable["message"] = ""
+        
+        // Save the location in the DB as A PFGeoPoint which take a CLLocation as argument.
         messageDBTable["location"] = PFGeoPoint(location: CLLocation(latitude: d["latitude"] as Double, longitude: d["longitude"] as Double))
         messageDBTable.saveInBackgroundWithBlock{
             (success: Bool!, error: NSError!) -> Void in
@@ -219,30 +231,21 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
                 
                 self.messageTable.reloadData()
                 
+                // Remove the observer for updating location.
                 NSNotificationCenter.defaultCenter().removeObserver(self, name: "ForceUpdateLocation", object: nil)
             }
         }
     }
     
     @IBAction func sendLocation_click(sender: AnyObject) {
+        
+        // Add an observer to check if the user gets his/her location.
         NSNotificationCenter.defaultCenter().addObserver(self, selector: ("startLocating:"), name: "ForceUpdateLocation", object: nil)
         
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.requestAlwaysAuthorization()
 
         self.startUpdatingLocation()
-    }
-    
-    let locationManager = CLLocationManager()
-    var latitude: Double! = 0.0
-    var longitude: Double! = 0.0
-    
-    func startUpdatingLocation(){
-        if CLLocationManager.locationServicesEnabled(){
-            self.locationManager.delegate = self
-            self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            self.locationManager.startUpdatingLocation()
-        }
     }
     
     @IBAction func recieverBtn_clicked(sender: AnyObject) {
@@ -252,6 +255,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         sendLatitude = theLocations[index].coordinate.latitude
         sendLongitude = theLocations[index].coordinate.longitude
         
+        // Move to the map view with the destination coordinates and calculate the route.
         performSegueWithIdentifier("moveToMap", sender: self)
     }
     
@@ -266,6 +270,20 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         alert.addAction(cancelAction)
         
         self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    
+    let locationManager = CLLocationManager()
+    var latitude: Double! = 0.0
+    var longitude: Double! = 0.0
+    
+    func startUpdatingLocation(){
+        // If location services is enabled, start the updateLocation.
+        if CLLocationManager.locationServicesEnabled(){
+            self.locationManager.delegate = self
+            self.locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            self.locationManager.startUpdatingLocation()
+        }
     }
     
     var sendLatitude: Double! = 0.0
@@ -292,11 +310,13 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         latitude = coord.latitude
         longitude = coord.longitude
         
+        // If the coords has been updated send a notification and include the coords in the message.
         if latitude != 0.0 && longitude != 0.0{
             var p: [String: Double] = [:]
             p["latitude"] = latitude
             p["longitude"] = longitude
             NSNotificationCenter.defaultCenter().postNotificationName("ForceUpdateLocation", object: self, userInfo: p)
+            // Stop the updating location because we don't need it anymore
             self.locationManager.stopUpdatingLocation()
         }
     }
@@ -310,6 +330,7 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         var cell: MessageCell!
         
+        // Divide the messages from and to, layout purpose.
         if self.senderMessages[indexPath.row] == self.username {
             cell = self.messageTable.dequeueReusableCellWithIdentifier("senderCell") as MessageCell
             cell.senderTextView.text = theMessages[indexPath.row]
@@ -324,7 +345,6 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
             cell.receiverTextView.text = theMessages[indexPath.row]
             if theLocations[indexPath.row].coordinate.latitude == 0.0 && theLocations[indexPath.row].coordinate.longitude == 0.0{
                 cell.receiverBtn.hidden = true
-                
             } else {
                 cell.receiverBtn.hidden = false
                 cell.receiverBtn.tag = indexPath.row

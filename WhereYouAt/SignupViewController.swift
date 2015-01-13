@@ -31,7 +31,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
         user["firstname"] = self.firstnameTextField.text
         user["lastname"] = self.lastnameTextField.text
         user.password = self.passwordTextField.text
-        
+    
         user.signUpInBackgroundWithBlock {
             (succeded: Bool!, signupError: NSError!) -> Void in
             
