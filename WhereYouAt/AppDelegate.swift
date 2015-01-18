@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
-        Parse.setApplicationId("wMNwNpfj87bX3Dia3mDqXiczJkmay2q9xNN7Fa6s", clientKey: "Jj4ycl8W8E7JK55iXhBJLaOPv9xHi944M4FVtsd1")
+        Parse.setApplicationId("APPLICATION KEY", clientKey: "CLIENT KEY")
+        
         PFFacebookUtils.initializeFacebook()
         
         // Select what type of notification that will be available.

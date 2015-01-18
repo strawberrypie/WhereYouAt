@@ -136,6 +136,8 @@ class MessageViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         var query = PFQuery.orQueryWithSubqueries([innerQ1, innerQ2])
         query.addDescendingOrder("createdAt")
+        query.limit = 20
+        
         query.findObjectsInBackgroundWithBlock {
             (objects: [AnyObject]!, error: NSError!) -> Void in
             
